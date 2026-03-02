@@ -1,0 +1,30 @@
+{
+  "name": "script-runner",
+  "version": "1.0.0",
+  "description": "Beautiful interactive TUI for package.json scripts. Arrow keys, fuzzy search, parallel runs, run history.",
+  "type": "module",
+  "bin": {
+    "script-runner": "./index.js",
+    "sr": "./index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "npm",
+    "scripts",
+    "cli",
+    "tui",
+    "developer-tools",
+    "bun",
+    "pnpm",
+    "yarn",
+    "interactive",
+    "fuzzy-search"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NickCirv/script-runner.git"
+  }
+}
