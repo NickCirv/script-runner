@@ -1,3 +1,5 @@
+![Banner](banner.svg)
+
 # script-runner
 
 Beautiful interactive TUI for `package.json` scripts. Arrow keys, fuzzy search, parallel runs, run history.
