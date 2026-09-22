@@ -1,146 +1,78 @@
-![script-runner — interactive TUI for package.json scripts with fuzzy search, parallel runs, and run history](assets/banner.png)
+![script-runner — Nicholas Ashkar editorial artwork](assets/nicholas-ashkar/banner.png)
 
-<div align="center">
+# script-runner
 
-**Navigate, search, and launch your package.json scripts from an interactive terminal UI — without memorising every command.**
+Browse and run a project’s package.json scripts from a terminal interface.
 
-![license](https://img.shields.io/badge/license-MIT-blue?labelColor=0B0A09)
-![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen?labelColor=0B0A09)
-![node](https://img.shields.io/badge/node-%3E%3D18-brightgreen?labelColor=0B0A09)
-![package managers](https://img.shields.io/badge/package%20managers-4-8B92F6?labelColor=0B0A09)
+Detects a package manager from known lockfiles, supports direct/sequential/parallel runs and records local run history.
 
-</div>
 
----
+<a id="install"></a>
 
-Most projects accumulate a graveyard of `package.json` scripts that nobody runs because nobody remembers what they are. `script-runner` replaces that with an arrow-key menu, fuzzy search, parallel execution, and a persistent run history — zero dependencies, zero install.
+## Quickstart
 
-```
-📦 Script Runner — my-app
-─────────────────────────────────────────────────────────────
-Package manager: bun | 8 scripts found
-
-  > ● dev          "bun run next dev"           ✅ 2h ago  (1.2s)
-      build        "bun run next build"         ✅ 1d ago  (45s)
-      test         "jest --watchAll"             ❌ 3d ago  (12s, FAILED)
-      lint         "eslint src/"                ✅ 5h ago  (3s)
-      type-check   "tsc --noEmit"               ✅ 2h ago  (8s)
-      format       "prettier --write ."         ✅ 1d ago  (2s)
-      db:migrate   "prisma migrate dev"         —  never run
-      deploy       "wrangler pages deploy dist" ✅ 3d ago  (28s)
-
-  ↑↓ navigate | Enter run | Space select | / search | R re-run | Q quit
-```
-
-## Install
-
-No install, no npm account — run straight from GitHub with zero dependencies:
+Package runtime requirement: Node.js `>=20`. Git is needed to obtain this pinned source checkout.
 
 ```bash
-npx github:NickCirv/script-runner
+git clone https://github.com/NickCirv/script-runner.git
+cd script-runner
+git checkout a25978d34119438761036d93eaeb1c9d60ed3b90
+node index.js --list
 ```
 
-Or use the short alias `sr` after a global install:
+This source-derived example has not been executed in this review. The command lists scripts declared in this checkout without running them.
 
-```bash
-npm install -g github:NickCirv/script-runner
-sr
-```
+
+
+
+
+
+<a id="flags"></a>
+
+<a id="keybindings-interactive-mode"></a>
+
+<a id="parallel-execution"></a>
+
+<a id="package-manager-detection"></a>
+
+<a id="run-history"></a>
 
 ## Usage
 
 ```bash
-# interactive TUI (default)
-npx github:NickCirv/script-runner
-
-# run a specific script directly
-npx github:NickCirv/script-runner dev
-
-# run multiple scripts sequentially
-npx github:NickCirv/script-runner build test
-
-# run multiple scripts in parallel
-npx github:NickCirv/script-runner -p lint type-check test
-
-# list all scripts with last-run status
-npx github:NickCirv/script-runner --list
-
-# show run history (last 30 entries)
-npx github:NickCirv/script-runner --history
-
-# show stats — run count, success rate, avg duration
-npx github:NickCirv/script-runner --stats
+node /path/to/script-runner/index.js --list
+node /path/to/script-runner/index.js test
+node /path/to/script-runner/index.js lint test
+node /path/to/script-runner/index.js lint test --parallel
 ```
 
-## Flags
+Run from the target package directory. `--history` (`-h`) and `--stats` show locally stored metadata; no arguments opens the interactive interface.
 
-| Flag | Alias | Description |
-|------|-------|-------------|
-| `--list` | `-l` | List all scripts with last-run status and duration |
-| `--history` | `-h` | Show the 30 most recent runs across all scripts |
-| `--stats` | `-s` | Show run count, success rate, and average duration per script |
-| `--parallel` | `-p` | Run the named scripts in parallel (use with explicit script names) |
+[Command reference](docs/REFERENCE.md) covers arguments, modes and output controls.
 
-## Keybindings (interactive mode)
 
-| Key | Action |
-|-----|--------|
-| `↑` / `↓` | Navigate the script list |
-| `Enter` | Run the highlighted script |
-| `Space` | Toggle a script for parallel selection |
-| `Enter` (after Space) | Run all selected scripts in parallel |
-| `/` | Start fuzzy search — narrows the list as you type |
-| `Esc` | Exit search, return full list |
-| `R` | Re-run the last script |
-| `Q` | Quit |
-| `Ctrl+C` | Exit immediately |
+<a id="what-it-is-not"></a>
 
-## Parallel execution
+## Behavior and limits
 
-Select multiple scripts with `Space`, then `Enter` to run them all at once. Output is prefixed by script name so you can tell streams apart:
+Selected scripts execute with the user’s normal permissions and can perform arbitrary project-defined work. History is stored under a home-directory filename based on package name, so same-name projects can share records. Lockfile detection is a heuristic and only recognizes the coded filenames, including bun.lockb. `-h` means history, not help.
 
-```
-Running 2 scripts in parallel...
+## Development
 
-[dev   ] Starting Next.js dev server...
-[test  ] Running test suite...
-[dev   ] Server started on :3000
-[test  ] 2 tests failed
+Declared package scripts:
 
-────────────────────────────────────────────────────────────
-[dev  ] DONE    (3.2s)
-[test ] FAILED  (exit 1, 12.3s)
-```
+| Script | Command |
+| --- | --- |
+| `test` | `node --test` |
 
-## Package manager detection
+The smoke test syntax-checks the entrypoint; it does not exercise CLI behavior or integrations.
 
-Detected from lockfiles — no config needed:
+## Research
 
-| Lockfile | Package manager used |
-|----------|---------------------|
-| `bun.lockb` | bun |
-| `pnpm-lock.yaml` | pnpm |
-| `yarn.lock` | yarn |
-| `package-lock.json` | npm |
-| (none found) | npm |
+[Source review and claim ledger](docs/RESEARCH.md) records revision `a25978d34119`, inspected files and verification gaps.
 
-## Run history
+## License and attribution
 
-Every run is recorded to `~/.script-runner-{project-name}.json`. Per script:
+Protected license and attribution files remain unchanged: [LICENSE](https://github.com/NickCirv/script-runner/blob/a25978d34119438761036d93eaeb1c9d60ed3b90/LICENSE).
 
-- Last run timestamp and duration
-- Last exit code (shown as ✅ / ❌)
-- Total run count
-- Last 20 individual runs (used for stats)
-
-## What it is NOT
-
-- **Not a task runner or build tool.** It executes the scripts already defined in your `package.json` — it doesn't define, chain, or transform them.
-- **Not a CI tool.** It is designed for local interactive use. For non-TTY environments (CI pipelines), it automatically falls back to `--list` output.
-- **Not a replacement for your package manager.** It calls `npm run`, `bun run`, `pnpm run`, or `yarn run` under the hood — all existing behaviour is preserved.
-
----
-
-<div align="center">
-<sub>Zero dependencies · Node 18+ · MIT · by <a href="https://github.com/NickCirv">NickCirv</a></sub>
-</div>
+[Artwork credits](assets/nicholas-ashkar/CREDITS.md) · [Nicholas Ashkar — consulting](https://nicholashkar.com/#oxblood-contact)
